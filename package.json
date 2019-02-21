@@ -6,7 +6,7 @@
     "version": "3.8.0"
   },
   "scripts": {
-    "deploy":"rm -rf .deploy_git "
+    "deploy":"hexo deploy -g"
   },
   "dependencies": {
     "hexo": "^3.8.0",
