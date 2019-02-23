@@ -10,7 +10,7 @@ tags: css
 
 盒模型是有两种标准的，一个是标准模型，一个是IE模型。
 
-![](C:\mdDocument\面试秘籍\img\盒模型.png)
+{% asset_img box-model.png %}
 
 在标准模型中，盒模型的宽高只是内容（content）的宽高，而在IE模型中盒模型的宽高是内容(content)+填充(padding)+边框(border)的总宽高。
 
