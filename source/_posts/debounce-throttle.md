@@ -4,6 +4,11 @@ date: 2019-02-25 09:55:11
 tags: javascript
 categories: javascript
 ---
+原文
+
+防抖：[https://github.com/mqyqingfeng/Blog/issues/26](https://github.com/mqyqingfeng/Blog/issues/26)
+
+节流：[https://github.com/mqyqingfeng/Blog/issues/25](https://github.com/mqyqingfeng/Blog/issues/25)
 如何防止频繁的事件触发，比如：
 
 1. window 的 resize、scroll
