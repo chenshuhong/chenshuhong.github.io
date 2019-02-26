@@ -1,7 +1,7 @@
 ---
 title: 盒模型
 date: 2019-02-22 02:51:21
-categories: css
+categories: 前端
 tags: css
 ---
 页面渲染时，dom 元素所采用的 **布局模型**。

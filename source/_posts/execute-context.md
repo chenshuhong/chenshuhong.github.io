@@ -2,7 +2,7 @@
 title: 执行上下文
 date: 2019-02-24 20:58:00
 tags: javascript
-categories: javascript
+categories: 前端
 ---
 ## 词法作用域
 

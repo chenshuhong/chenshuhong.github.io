@@ -2,7 +2,7 @@
 title: 防抖&节流
 date: 2019-02-25 09:55:11
 tags: javascript
-categories: javascript
+categories: 前端
 ---
 原文
 

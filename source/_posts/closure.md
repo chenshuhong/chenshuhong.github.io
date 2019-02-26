@@ -2,7 +2,7 @@
 title: 闭包
 date: 2019-02-26 01:55:23
 tags: javascript
-categories: javascript
+categories: 前端
 ---
 原文：[https://github.com/mqyqingfeng/Blog/issues/9](https://github.com/mqyqingfeng/Blog/issues/9)
 
@@ -35,7 +35,7 @@ foo();
     ];
 ```
 
-1. 全局上下文初始化
+2. 全局上下文初始化
 
 ```js
     globalContext = {
@@ -45,7 +45,7 @@ foo();
     }
 ```
 
-1. 初始化的同时，checkscope 函数被创建，保存作用域链到函数的内部属性[[scope]]
+3. 初始化的同时，checkscope 函数被创建，保存作用域链到函数的内部属性[[scope]]
 
 ```js
     checkscope.[[scope]] = [
@@ -53,7 +53,7 @@ foo();
     ];
 ```
 
-1. 执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈
+3. 执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈
 
 ```js
     ECStack = [
@@ -62,7 +62,7 @@ foo();
     ];
 ```
 
-1. checkscope 函数执行上下文初始化：
+4. checkscope 函数执行上下文初始化：
    1. 复制函数 [[scope]] 属性创建作用域链，
    2. 用 arguments 创建活动对象，
    3. 初始化活动对象，即加入形参、函数声明、变量声明，
@@ -86,7 +86,7 @@ f.[[scope]] = [
 ];    
 ```
 
-1. checkscope 函数执行完毕，checkscope 执行上下文从执行上下文栈中弹出
+5. checkscope 函数执行完毕，checkscope 执行上下文从执行上下文栈中弹出
 
 ```
 ECStack = [
@@ -94,7 +94,7 @@ ECStack = [
     ];
 ```
 
-1. 执行 f 函数，创建 f 函数执行上下文，f 执行上下文被压入执行上下文栈
+6. 执行 f 函数，创建 f 函数执行上下文，f 执行上下文被压入执行上下文栈
 
 ```
 ECStack = [
@@ -103,7 +103,7 @@ ECStack = [
     ];
 ```
 
-1. f 执行上下文初始化，创建变量对象、作用域链、this等
+7. f 执行上下文初始化，创建变量对象、作用域链、this等
 
    1. 复制函数 [[scope]] 属性创建作用域链
 
@@ -125,8 +125,8 @@ fContext = {
     }
 ```
 
-1. f 函数执行，沿着作用域链查找 scope 值，返回 scope 值
-2. f 函数执行完毕，f 函数上下文从执行上下文栈中弹出
+8. f 函数执行，沿着作用域链查找 scope 值，返回 scope 值
+9. f 函数执行完毕，f 函数上下文从执行上下文栈中弹出
 
 ```
 ECStack = [

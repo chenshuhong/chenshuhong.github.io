@@ -2,7 +2,7 @@
 title: 类型判断
 date: 2019-02-25 16:04:34
 tags: javascript
-categories: javascript
+categories: 前端
 ---
 ## typeof
 
