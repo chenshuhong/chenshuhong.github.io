@@ -27,6 +27,7 @@ var a = Array(3,11,8); // [ 3,11,8 ]
 let a = Array.of(3, 11, 8); // [3,11,8]
 let a = Array.of(3); // [3]
 ```
+
 ## ES6 Arrary.from()
 
 用于将两类对象转为真正的数组（不改变原对象，返回新的数组）。
@@ -45,6 +46,7 @@ let a = Array.of(3); // [3]
     let arr = Array.from('hello'); // ['h','e','l','l','o']
     let arr = Array.from(new Set(['a','b'])); // ['a','b']
 ```
+
 ## 方法
 
 数组原型提供了非常多的方法，这里分为三类来讲，一类会改变原数组的值，一类是不会改变原数组，以及数组的遍历方法。
@@ -398,6 +400,27 @@ console.log(a.indexOf('NaN'));  // -1
 console.log(a.indexOf('啦啦')); // 0
 ```
 
+数组去重
+
+```
+var array = [1, 1, '1'];
+
+function unique(array) {
+    var res = [];
+    for (var i = 0, len = array.length; i < len; i++) {
+        var current = array[i];
+        if (res.indexOf(current) === -1) {
+            res.push(current)
+        }
+    }
+    return res;
+}
+
+console.log(unique(array));
+```
+
+
+
 #### lastIndexOf
 
 方法返回指定元素,在数组中的最后一个的索引，如果不存在则返回 -1。（从数组后面往前查找）
@@ -439,7 +462,7 @@ fromIndex(可选):默认值为0，参数表示搜索的起始位置，接受负�
 2. indexOf方法检查是否包含某个值不够语义化，需要判断是否不等于`-1`，表达不够直观
 
 3. ```
-    let a=['OB','Koro1',1,NaN];
+   let a=['OB','Koro1',1,NaN];
    // let b=a.includes(NaN); // true 识别NaN
    // let b=a.includes('Koro1',100); // false 超过数组长度 不搜索
    // let b=a.includes('Koro1',-3);  // true 从倒数第三个元素开始搜索 
@@ -571,6 +594,40 @@ let result = a.filter(function (value, index, array) {
 });
 console.log(result,a);// [32,33,40] [32,33,16,40]
 ```
+
+数组去重
+
+```
+var array = [1, 2, 1, 1, '1'];
+
+function unique(array) {
+    var res = array.filter(function(item, index, array){
+        return array.indexOf(item) === index;
+    })
+    return res;
+}
+
+console.log(unique(array));
+```
+
+扩展，你用es6 Set去重
+
+```
+var array = [1, 2, 1, 1, '1'];
+
+function unique(array) {
+   return Array.from(new Set(array));
+}
+
+//更简化
+function unique(array) {
+    return [...new Set(array)];
+}
+
+console.log(unique(array)); // [1, 2, "1"]
+```
+
+
 
 #### map 
 
@@ -705,3 +762,263 @@ for (let [index, elem] of ['a', 'b'].entries()) {
     console.log(entries.next().value); // [1, 'b']
     console.log(entries.next().value); // [2, 'c']
 ```
+
+# 求数组的最大值和最小值
+
+### Math.max([value1[,value2, ...]])
+
+- 如果有任一参数不能被转换为数值，则结果为 NaN。
+- max 是 Math 的静态方法，所以应该像这样使用：Math.max()，而不是作为 Math 实例的方法 (简单的来说，就是不使用 new )
+- 如果没有参数，则结果为 `-Infinity` (注意是负无穷大)
+
+```
+Math.max(true, 0) // 1
+Math.max(true, '2', null) // 2
+Math.max(1, undefined) // NaN
+Math.max(1, {}) // NaN
+var min = Math.min(); //Infinity
+var max = Math.max(); //-Infinity
+console.log(min > max);
+```
+
+### 原始方法
+
+```js
+var arr = [6, 4, 1, 8, 2, 11, 23];
+
+var result = arr[0];
+for (var i = 1; i < arr.length; i++) {
+    result =  Math.max(result, arr[i]);
+}
+console.log(result);
+```
+
+### reduce
+
+```js
+var arr = [6, 4, 1, 8, 2, 11, 23];
+
+function max(prev, next) {
+    return Math.max(prev, next);
+}
+console.log(arr.reduce(max));
+```
+
+### 排序
+
+```js
+var arr = [6, 4, 1, 8, 2, 11, 23];
+
+arr.sort(function(a,b){return a - b;});
+console.log(arr[arr.length - 1])
+```
+
+### eval
+
+```js
+var arr = [6, 4, 1, 8, 2, 11, 23];
+
+var max = eval("Math.max(" + arr + ")");
+console.log(max)
+```
+
+### apply
+
+```js
+var arr = [6, 4, 1, 8, 2, 11, 23];
+console.log(Math.max.apply(null, arr))
+```
+
+### ES6
+
+```js
+var arr = [6, 4, 1, 8, 2, 11, 23];
+console.log(Math.max(...arr))
+```
+
+## 数组扁平化
+
+数组的扁平化，就是将一个嵌套多层的数组 array (嵌套可以是任何层数)转换为只有一层的数组。
+
+举个例子，假设有个名为 flatten 的函数可以做到数组扁平化，效果就会如下：
+
+```
+var arr = [1, [2, [3, 4]]];
+console.log(flatten(arr)) // [1, 2, 3, 4]
+```
+
+### 递归
+
+```js
+// 方法 1
+var arr = [1, [2, [3, 4]]];
+
+function flatten(arr) {
+    var result = [];
+    for (var i = 0, len = arr.length; i < len; i++) {
+        if (Array.isArray(arr[i])) {
+            result = result.concat(flatten(arr[i]))
+        }
+        else {
+            result.push(arr[i])
+        }
+    }
+    return result;
+}
+
+
+console.log(flatten(arr))
+```
+
+### reduce
+
+```js
+// 方法2
+var arr = [1, [2, [3, 4]]];
+
+function flatten(arr) {
+    return arr.reduce(function(prev, next){
+        return prev.concat(Array.isArray(next) ? flatten(next) : next)
+    }, [])
+}
+
+console.log(flatten(arr))
+```
+
+### ...
+
+```js
+// 方法4
+var arr = [1, [2, [3, 4]]];
+
+function flatten(arr) {
+
+    while (arr.some(item => Array.isArray(item))) {
+        arr = [].concat(...arr);
+    }
+
+    return arr;
+}
+
+console.log(flatten(arr))
+```
+
+# 在数组中查找指定元素
+
+### 实现findIndex
+
+```js
+function findIndex(array, predicate, context) {
+    for (var i = 0; i < array.length; i++) {
+        if (predicate.call(context, array[i], i, array)) return i;
+    }
+    return -1;
+}
+
+console.log(findIndex([1, 2, 3, 4], function(item, i, array){
+    if (item == 3) return true;
+})) // 2
+```
+
+### 实现findLastIndex
+
+```js
+function findLastIndex(array, predicate, context) {
+    var length = array.length;
+    for (var i = length - 1; i >= 0; i--) {
+        if (predicate.call(context, array[i], i, array)) return i;
+    }
+    return -1;
+}
+
+console.log(findLastIndex([1, 2, 3, 4], function(item, index, array){
+    if (item == 1) return true;
+})) // 0
+```
+
+### createIndexFinder
+
+findIndex 和 findLastIndex 其实有很多重复的部分，如何精简冗余的内容
+
+```js
+function createIndexFinder(dir) {
+    return function(array, predicate, context) {
+
+        var length = array.length;
+        var index = dir > 0 ? 0 : length - 1;
+
+        for (; index >= 0 && index < length; index += dir) {
+            if (predicate.call(context, array[index], index, array)) return index;
+        }
+
+        return -1;
+    }
+}
+
+var findIndex = createIndexFinder(1);
+var findLastIndex = createIndexFinder(-1);
+```
+
+### sortedIndex
+
+在一个排好序的数组中找到 value 对应的位置，保证插入数组后，依然保持有序的状态。
+
+假设该函数命名为 sortedIndex，效果为：
+
+```js
+sortedIndex([10, 20, 30], 25); // 2	
+```
+
+```js
+// 第一版
+function sortedIndex(array, obj) {
+
+    var low = 0, high = array.length;
+
+    while (low < high) {
+        var mid = Math.floor((low + high) / 2);
+        if (array[mid] < obj) low = mid + 1;
+        else high = mid;
+    }
+
+    return high;
+};
+
+console.log(sortedIndex([10, 20, 30, 40, 50], 35)) // 3
+```
+
+现在的方法虽然能用，但通用性不够，比如我们希望能处理这样的情况：
+
+```js
+// stooges 配角 比如 三个臭皮匠 The Three Stooges
+var stooges = [{name: 'stooge1', age: 10}, {name: 'stooge2', age: 30}];
+
+var result = sortedIndex(stooges, {name: 'stooge3', age: 20}, function(stooge){
+    return stooge.age
+});
+
+console.log(result) // 1
+```
+
+```js
+// 第二版
+function cb(func, context) {
+       if (context === void 0) return func;
+       return function() {
+           return func.apply(context, arguments);
+      };
+}
+function sortedIndex(array, obj, iteratee, context) {
+
+    iteratee = cb(iteratee, context)
+
+    var low = 0, high = array.length;
+    while (low < high) {
+        var mid = Math.floor((low + high) / 2);
+        if (iteratee(array[mid]) < iteratee(obj)) low = mid + 1;
+        else high = mid;
+    }
+    return high;
+};
+```
+
