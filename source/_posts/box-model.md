@@ -9,7 +9,7 @@ tags: css
 盒模型的组成，由里向外content,padding,border,margin。
 
 盒模型是有两种标准的，一个是标准模型，一个是IE模型。
-
+<!-- more -->
 {% asset_img box-model.png %}
 {% asset_img ie盒子模型.webp %}
 

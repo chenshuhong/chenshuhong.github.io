@@ -21,7 +21,7 @@ console.log(arr) // ["old", 1, true, null, undefined]
 console.log(new_arr) // ["new", 1, true, null, undefined]
 var new_arr = arr.slice(); //["old", 1, true, null, undefined]
 ```
-
+<!-- more -->
 但是如果数组嵌套了对象或者数组的话，比如：
 
 ```

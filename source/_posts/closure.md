@@ -12,7 +12,7 @@ categories: 前端
   2. 在代码中引用了自由变量
 
 以下面代码为例，首先分析上下文栈和执行上下文的变化情况
-
+<!-- more -->
 ```
 var scope = "global scope";
 function checkscope(){

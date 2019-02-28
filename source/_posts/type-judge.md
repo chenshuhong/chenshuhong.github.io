@@ -17,7 +17,7 @@ typeof 'ccc';//string
 typeof new Object();//object
 typeof function(){};//function
 ​```
-
+<!-- more -->
 Object 下还有很多细分的类型如 Array、Function、Date、RegExp、Error 等无法通过typeof区分，因为都返回‘object’。
 
 ## Object.prototype.toString

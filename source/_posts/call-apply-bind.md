@@ -24,7 +24,7 @@ bar.call(foo); // 1
 
 1. call 改变了 this 的指向，指向到 foo
 2. bar 函数执行了
-
+<!-- more -->
 ### 模拟实现
 
 ```js
