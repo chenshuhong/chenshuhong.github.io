@@ -1,5 +1,5 @@
 ---
-title: clone
+title: 克隆
 date: 2019-02-27 17:20:08
 tags: javascript
 categories: 前端
