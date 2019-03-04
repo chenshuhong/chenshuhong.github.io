@@ -1,3 +1,9 @@
+---
+title: 柯里化和偏函数
+date: 2019-02-24 20:58:00
+tags: javascript
+categories: 前端
+---
 # 柯里化
 
 ## 定义
