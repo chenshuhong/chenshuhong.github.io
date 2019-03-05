@@ -1,11 +1,9 @@
 ---
-title: float-precision
+title: IEEF中浮点数精度问题
 date: 2019-03-05 17:11:35
 tags: 计算机组成原理
 categories: 通用
 ---
-## IEEF中浮点数精度问题
-
 先看下下面例子
 
 ```
