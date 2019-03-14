@@ -10,7 +10,7 @@ categories: 前端
 <!-- more -->
 2. `<script async src="script.js"></script>`
 
-有 async，加载和渲染后续文档元素的过程将和 script.js 的加载与执行并行进行（异步）。
+有 async，加载和渲染后续文档元素的过程将和 script.js 的加载与执行并行进行（异步）。异步脚本一定会在页面的 load 事件前执行，但可能会在 DOMContentLoaded 事件触发之前或之后执行。 
 
 3. `<script defer src="myscript.js"></script>`
 
