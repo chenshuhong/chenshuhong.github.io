@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="四种模块加载规范 AMD CMD CommonJS ES6  AMD The Asynchronous Module Definition  AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。 一个使用requireJs的项目： 目录 12345678* project/    * index.html    * vender/        * main.js        *">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端模块化">
+<meta property="og:url" content="http://yoursite.com/2019/03/10/module/index.html">
+<meta property="og:site_name" content="陈树鸿的个人博客">
+<meta property="og:description" content="四种模块加载规范 AMD CMD CommonJS ES6  AMD The Asynchronous Module Definition  AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。 一个使用requireJs的项目： 目录 12345678* project/    * index.html    * vender/        * main.js        *">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-14T12:48:04.608Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端模块化">
+<meta name="twitter:description" content="四种模块加载规范 AMD CMD CommonJS ES6  AMD The Asynchronous Module Definition  AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。 一个使用requireJs的项目： 目录 12345678* project/    * index.html    * vender/        * main.js        *">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/10/module/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>前端模块化 | 陈树鸿的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈树鸿的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">实在是学不动了</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/10/module/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈树鸿">
+      <meta itemprop="description" content="梦想着有一天成为全栈工程师">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈树鸿的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前端模块化
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-10 02:35:25" itemprop="dateCreated datePublished" datetime="2019-03-10T02:35:25+08:00">2019-03-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-14 20:48:04" itemprop="dateModified" datetime="2019-03-14T20:48:04+08:00">2019-03-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/前端/" itemprop="url" rel="index"><span itemprop="name">前端</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="四种模块加载规范"><a href="#四种模块加载规范" class="headerlink" title="四种模块加载规范"></a>四种模块加载规范</h2><ul>
+<li>AMD</li>
+<li>CMD</li>
+<li>CommonJS</li>
+<li>ES6</li>
+</ul>
+<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><blockquote>
+<p>The Asynchronous Module Definition</p>
+</blockquote>
+<p><strong>AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。</strong></p>
+<p>一个使用requireJs的项目：</p>
+<p>目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">* project/</span><br><span class="line">    * index.html</span><br><span class="line">    * vender/</span><br><span class="line">        * main.js</span><br><span class="line">        * require.js</span><br><span class="line">        * add.js</span><br><span class="line">        * square.js</span><br><span class="line">        * multiply.js</span><br></pre></td></tr></table></figure>
+<p><code>index.html</code> 的内容如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>require.js<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Content<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">data-main</span>=<span class="string">"vender/main"</span> <span class="attr">src</span>=<span class="string">"vender/require.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>data-main=&quot;vender/main&quot;</code> 表示主模块是 <code>vender</code> 下的 <code>main.js</code>。</p>
+<p><code>main.js</code> 的配置如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="built_in">require</span>([<span class="string">'./add'</span>, <span class="string">'./square'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">addModule, squareModule</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(addModule.add(<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">    <span class="built_in">console</span>.log(squareModule.square(<span class="number">3</span>))</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>require 的第一个参数表示依赖的模块的路径，第二个参数表示此模块的内容。</p>
+<p>由此可以看出，<code>主模块</code>依赖 <code>add 模块</code>和 <code>square 模块</code>。</p>
+<p>我们看下 <code>add 模块</code>即 <code>add.js</code> 的内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// add.js</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'加载了 add 模块'</span>);</span><br><span class="line">    <span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span>(<span class="params">x, y</span>) </span>&#123;　</span><br><span class="line">        <span class="keyword">return</span> x + y;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;　　　　　　</span><br><span class="line">        add: add</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><code>requirejs</code> 为全局添加了 <code>define</code> 函数，你只要按照这种约定的方式书写这个模块即可。</p>
+<p>那如果依赖的模块又依赖了其他模块呢？</p>
+<p>我们来看看<code>主模块</code>依赖的 <code>square 模块</code>， <code>square 模块</code>的作用是求出一个数字的平方，比如输入 3 就返回 9，该模块依赖一个<code>乘法模块</code>，该乘法模块即 <code>multiply.js</code> 的代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// multiply.js</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'加载了 multiply 模块'</span>)</span><br><span class="line">    <span class="keyword">var</span> multiply = <span class="function"><span class="keyword">function</span>(<span class="params">x, y</span>) </span>&#123;　</span><br><span class="line">        <span class="keyword">return</span> x * y;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;　　　　　　</span><br><span class="line">        multiply: multiply</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>而 <code>square 模块</code>就要用到 <code>multiply 模块</code>，其实写法跟 main.js 添加依赖模块一样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// square.js</span></span><br><span class="line">define([<span class="string">'./multiply'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">multiplyModule</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'加载了 square 模块'</span>)</span><br><span class="line">    <span class="keyword">return</span> &#123;　　　　　　</span><br><span class="line">        square: <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> multiplyModule.multiply(num, num)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>require.js 会自动分析依赖关系，将需要加载的模块正确加载。</p>
+<p>如果我们在浏览器中打开 <code>index.html</code>，打印的顺序为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">加载了 add 模块</span><br><span class="line">加载了 multiply 模块</span><br><span class="line">加载了 square 模块</span><br><span class="line">2</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD 其实就是 SeaJS 在推广过程中对模块定义的规范化产出</p>
+<p>一个使用seaJs的项目：</p>
+<p>目录与 requirejs 项目目录相同:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">* project/</span><br><span class="line">    * index.html</span><br><span class="line">    * vender/</span><br><span class="line">        * main.js</span><br><span class="line">        * require.js</span><br><span class="line">        * add.js</span><br><span class="line">        * square.js</span><br><span class="line">        * multiply.js</span><br></pre></td></tr></table></figure>
+<p><code>index.html</code> 的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;sea.js&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h1&gt;Content&lt;/h1&gt;</span><br><span class="line">    &lt;script src=&quot;vender/sea.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">    // 在页面中加载主模块</span><br><span class="line">    seajs.use(&quot;./vender/main&quot;);</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>main.js 的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// main.js</span><br><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">    var addModule = require(&apos;./add&apos;);</span><br><span class="line">    console.log(addModule.add(1, 1))</span><br><span class="line"></span><br><span class="line">    var squareModule = require(&apos;./square&apos;);</span><br><span class="line">    console.log(squareModule.square(3))</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>add.js 的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// add.js</span><br><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">    console.log(&apos;加载了 add 模块&apos;)</span><br><span class="line">    var add = function(x, y) &#123;　</span><br><span class="line">        return x + y;</span><br><span class="line">    &#125;;</span><br><span class="line">    module.exports = &#123;　　　　　　</span><br><span class="line">        add: add</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>square.js 的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">    console.log(&apos;加载了 square 模块&apos;)</span><br><span class="line">    var multiplyModule = require(&apos;./multiply&apos;);</span><br><span class="line">    module.exports = &#123;　　　　　　</span><br><span class="line">        square: function(num) &#123;</span><br><span class="line">            return multiplyModule.multiply(num, num)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>multiply.js 的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">    console.log(&apos;加载了 multiply 模块&apos;)</span><br><span class="line">    var multiply = function(x, y) &#123;　</span><br><span class="line">        return x * y;</span><br><span class="line">    &#125;;</span><br><span class="line">    module.exports = &#123;　　　　　　</span><br><span class="line">        multiply: multiply</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>跟第一个例子是同样的依赖结构，即 main 依赖 add 和 square，square 又依赖 multiply。</p>
+<p>如果我们在浏览器中打开 <code>index.html</code>，打印的顺序为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">加载了 add 模块</span><br><span class="line">2</span><br><span class="line">加载了 square 模块</span><br><span class="line">加载了 multiply 模块</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<h2 id="AMD-与-CMD-的区别"><a href="#AMD-与-CMD-的区别" class="headerlink" title="AMD 与 CMD 的区别"></a>AMD 与 CMD 的区别</h2><p>1.AMD 推崇<strong>依赖前置</strong>，CMD 推崇<strong>依赖就近</strong>。看两个项目中的 main.js：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// require.js 例子中的 main.js</span><br><span class="line">// 依赖必须一开始就写好</span><br><span class="line">require([&apos;./add&apos;, &apos;./square&apos;], function(addModule, squareModule) &#123;</span><br><span class="line">    console.log(addModule.add(1, 1))</span><br><span class="line">    console.log(squareModule.square(3))</span><br><span class="line">&#125;);</span><br><span class="line">// sea.js 例子中的 main.js</span><br><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">    var addModule = require(&apos;./add&apos;);</span><br><span class="line">    console.log(addModule.add(1, 1))</span><br><span class="line"></span><br><span class="line">    // 依赖可以就近书写</span><br><span class="line">    var squareModule = require(&apos;./square&apos;);</span><br><span class="line">    console.log(squareModule.square(3))</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>2.对于依赖的模块，AMD 是<strong>提前执行</strong>，CMD 是<strong>延迟执行</strong>。看两个项目中的打印顺序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// require.js</span><br><span class="line">加载了 add 模块</span><br><span class="line">加载了 multiply 模块</span><br><span class="line">加载了 square 模块</span><br><span class="line">2</span><br><span class="line">9</span><br><span class="line">// sea.js</span><br><span class="line">加载了 add 模块</span><br><span class="line">2</span><br><span class="line">加载了 square 模块</span><br><span class="line">加载了 multiply 模块</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<p>AMD 是将需要使用的模块先加载完再执行代码，而 CMD 是在 require 的时候才去加载模块文件，加载完再接着执行。</p>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>AMD 和 CMD 都是用于浏览器端的模块规范，而在服务器端比如 node，采用的则是 CommonJS 规范。</p>
+<p>导出模块的方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var add = function(x, y) &#123;　</span><br><span class="line">    return x + y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports.add = add;</span><br></pre></td></tr></table></figure>
+<p>引入模块的方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var add = require(&apos;./add.js&apos;);</span><br><span class="line">console.log(add.add(1, 1));</span><br></pre></td></tr></table></figure>
+<p>我们将之前的例子改成 CommonJS 规范：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// main.js</span><br><span class="line">var add = require(&apos;./add.js&apos;);</span><br><span class="line">console.log(add.add(1, 1))</span><br><span class="line"></span><br><span class="line">var square = require(&apos;./square.js&apos;);</span><br><span class="line">console.log(square.square(3));</span><br><span class="line">// add.js</span><br><span class="line">console.log(&apos;加载了 add 模块&apos;)</span><br><span class="line"></span><br><span class="line">var add = function(x, y) &#123;　</span><br><span class="line">    return x + y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports.add = add;</span><br><span class="line">// multiply.js</span><br><span class="line">console.log(&apos;加载了 multiply 模块&apos;)</span><br><span class="line"></span><br><span class="line">var multiply = function(x, y) &#123;　</span><br><span class="line">    return x * y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports.multiply = multiply;</span><br><span class="line">// square.js</span><br><span class="line">console.log(&apos;加载了 square 模块&apos;)</span><br><span class="line"></span><br><span class="line">var multiply = require(&apos;./multiply.js&apos;);</span><br><span class="line"></span><br><span class="line">var square = function(num) &#123;　</span><br><span class="line">    return multiply.multiply(num, num);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports.square = square;</span><br></pre></td></tr></table></figure>
+<p>如果我们执行 <code>node main.js</code>，打印的顺序为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">加载了 add 模块</span><br><span class="line">2</span><br><span class="line">加载了 square 模块</span><br><span class="line">加载了 multiply 模块</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<p>跟 sea.js 的执行结果一致，也是在 require 的时候才去加载模块文件，加载完再接着执行。</p>
+<blockquote>
+<p>CommonJS 规范加载模块是同步的，也就是说，只有加载完成，才能执行后面的操作。</p>
+<p>由于 Node.js 主要用于服务器编程，模块文件一般都已经存在于本地硬盘，所以加载起来比较快，不用考虑非同步加载的方式，所以 CommonJS 规范比较适用。</p>
+<p>但是，如果是浏览器环境，要从服务器端加载模块，这时就必须采用非同步模式，因此浏览器端一般采用 AMD 规范。</p>
+</blockquote>
+<h2 id="ES6"><a href="#ES6" class="headerlink" title="ES6"></a>ES6</h2><p>导出模块的方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var firstName = &apos;Michael&apos;;</span><br><span class="line">var lastName = &apos;Jackson&apos;;</span><br><span class="line">var year = 1958;</span><br><span class="line"></span><br><span class="line">export &#123;firstName, lastName, year&#125;;</span><br></pre></td></tr></table></figure>
+<p>引入模块的方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &#123;firstName, lastName, year&#125; from &apos;./profile&apos;;</span><br></pre></td></tr></table></figure>
+<h2 id="ES6-与-CommonJS"><a href="#ES6-与-CommonJS" class="headerlink" title="ES6 与 CommonJS"></a>ES6 与 CommonJS</h2><p>它们有两个重大差异。</p>
+<blockquote>
+<ol>
+<li>CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。</li>
+<li>CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。因为 CommonJS 加载的是一个对象（即module.exports属性），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成。</li>
+</ol>
+</blockquote>
+<p>第一个差异：</p>
+<p>举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 输出模块 counter.js</span><br><span class="line">var counter = 3;</span><br><span class="line">function incCounter() &#123;</span><br><span class="line">  counter++;</span><br><span class="line">&#125;</span><br><span class="line">module.exports = &#123;</span><br><span class="line">    counter: counter,</span><br><span class="line">    incCounter: incCounter,</span><br><span class="line">&#125;;</span><br><span class="line">// 引入模块 main.js</span><br><span class="line">var mod = require(&apos;./counter&apos;);</span><br><span class="line"></span><br><span class="line">console.log(mod.counter);  // 3</span><br><span class="line">mod.incCounter();</span><br><span class="line">console.log(mod.counter); // 3</span><br></pre></td></tr></table></figure>
+<p>counter.js 模块加载以后，它的内部变化就影响不到输出的 mod.counter 了。这是因为 mod.counter 是一个原始类型的值，会被缓存。</p>
+<p>但是如果修改 counter 为一个引用类型的话：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 输出模块 counter.js</span><br><span class="line">var counter = &#123;</span><br><span class="line">    value: 3</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">function incCounter() &#123;</span><br><span class="line">    counter.value++;</span><br><span class="line">&#125;</span><br><span class="line">module.exports = &#123;</span><br><span class="line">    counter: counter,</span><br><span class="line">    incCounter: incCounter,</span><br><span class="line">&#125;;</span><br><span class="line">// 引入模块 main.js</span><br><span class="line">var mod = require(&apos;./counter.js&apos;);</span><br><span class="line"></span><br><span class="line">console.log(mod.counter.value); // 3</span><br><span class="line">mod.incCounter();</span><br><span class="line">console.log(mod.counter.value); // 4</span><br></pre></td></tr></table></figure>
+<p>value 是会发生改变的。不过也可以说这是 “值的拷贝”，只是对于引用类型而言，值指的其实是引用。</p>
+<p>而如果我们将这个例子改成 ES6:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// counter.js</span><br><span class="line">export let counter = 3;</span><br><span class="line">export function incCounter() &#123;</span><br><span class="line">  counter++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// main.js</span><br><span class="line">import &#123; counter, incCounter &#125; from &apos;./counter&apos;;</span><br><span class="line">console.log(counter); // 3</span><br><span class="line">incCounter();</span><br><span class="line">console.log(counter); // 4</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令 import，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的 import 有点像 Unix 系统的“符号连接”，原始值变了，import 加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。</p>
+</blockquote>
+<h2 id="babel"><a href="#babel" class="headerlink" title="babel"></a>babel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// ES6</span><br><span class="line">var firstName = &apos;Michael&apos;;</span><br><span class="line">var lastName = &apos;Jackson&apos;;</span><br><span class="line">var year = 1958;</span><br><span class="line"></span><br><span class="line">export &#123;firstName, lastName, year&#125;;</span><br><span class="line">// Babel 编译后</span><br><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">Object.defineProperty(exports, &quot;__esModule&quot;, &#123;</span><br><span class="line">  value: true</span><br><span class="line">&#125;);</span><br><span class="line">var firstName = &apos;Michael&apos;;</span><br><span class="line">var lastName = &apos;Jackson&apos;;</span><br><span class="line">var year = 1958;</span><br><span class="line"></span><br><span class="line">exports.firstName = firstName;</span><br><span class="line">exports.lastName = lastName;</span><br><span class="line">exports.year = year;</span><br><span class="line"></span><br><span class="line">// ES6</span><br><span class="line">import &#123;firstName, lastName, year&#125; from &apos;./profile&apos;;</span><br><span class="line">// Babel 编译后</span><br><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">var _profile = require(&apos;./profile&apos;);</span><br></pre></td></tr></table></figure>
+<p>babel 只是把 ES6 模块语法转为 CommonJS 模块语法，然而浏览器是不支持这种模块语法的，所以直接跑在浏览器会报错的，如果想要在浏览器中运行，还是需要使用打包工具将代码打包。</p>
+<h2 id="webpack"><a href="#webpack" class="headerlink" title="webpack"></a>webpack</h2><p>Babel 将 ES6 模块转为 CommonJS 后， webpack 又是怎么做的打包的呢？它该如何将这些文件打包在一起，从而能保证正确的处理依赖，以及能在浏览器中运行呢？</p>
+<p>首先为什么浏览器中不支持 CommonJS 语法呢？</p>
+<p>这是因为浏览器环境中并没有 module、 exports、 require 等环境变量。</p>
+<p>换句话说，webpack 打包后的文件之所以在浏览器中能运行，就是靠模拟了这些变量的行为。</p>
+<p>那怎么模拟呢？</p>
+<p>我们以 CommonJS 项目中的 square.js 为例，它依赖了 multiply 模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">console.log(&apos;加载了 square 模块&apos;)</span><br><span class="line"></span><br><span class="line">var multiply = require(&apos;./multiply.js&apos;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var square = function(num) &#123;　</span><br><span class="line">    return multiply.multiply(num, num);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports.square = square;</span><br></pre></td></tr></table></figure>
+<p>webpack 会将其包裹一层，注入这些变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function(module, exports, require) &#123;</span><br><span class="line">    console.log(&apos;加载了 square 模块&apos;);</span><br><span class="line"></span><br><span class="line">    var multiply = require(&quot;./multiply&quot;);</span><br><span class="line">    module.exports = &#123;</span><br><span class="line">        square: function(num) &#123;</span><br><span class="line">            return multiply.multiply(num, num);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>webpack如何将commonjs打包？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自执行函数</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">modules</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 用于储存已经加载过的模块</span></span><br><span class="line">    <span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">require</span>(<span class="params">moduleName</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (installedModules[moduleName]) &#123;</span><br><span class="line">            <span class="keyword">return</span> installedModules[moduleName].exports;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleName] = &#123;</span><br><span class="line">            exports: &#123;&#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        modules[moduleName](<span class="built_in">module</span>, <span class="built_in">module</span>.exports, <span class="built_in">require</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 加载主模块</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">require</span>(<span class="string">"main"</span>);</span><br><span class="line"></span><br><span class="line">&#125;)(&#123;</span><br><span class="line">    <span class="string">"main"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports, require</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> addModule = <span class="built_in">require</span>(<span class="string">"./add"</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(addModule.add(<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> squareModule = <span class="built_in">require</span>(<span class="string">"./square"</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(squareModule.square(<span class="number">3</span>));</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"./add"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports, require</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'加载了 add 模块'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">module</span>.exports = &#123;</span><br><span class="line">            add: <span class="function"><span class="keyword">function</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> x + y;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"./square"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports, require</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'加载了 square 模块'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> multiply = <span class="built_in">require</span>(<span class="string">"./multiply"</span>);</span><br><span class="line">        <span class="built_in">module</span>.exports = &#123;</span><br><span class="line">            square: <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> multiply.multiply(num, num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="string">"./multiply"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports, require</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'加载了 multiply 模块'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">module</span>.exports = &#123;</span><br><span class="line">            multiply: <span class="function"><span class="keyword">function</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> x * y;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/06/selector-priority/" rel="next" title="选择器优先级">
+                <i class="fa fa-chevron-left"></i> 选择器优先级
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/14/js-label/" rel="prev" title="js的label使用">
+                js的label使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">陈树鸿</p>
+              <p class="site-description motion-element" itemprop="description">梦想着有一天成为全栈工程师</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/chenshuhong" title="GitHub &rarr; https://github.com/chenshuhong" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#四种模块加载规范"><span class="nav-number">1.</span> <span class="nav-text">四种模块加载规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AMD"><span class="nav-number">2.</span> <span class="nav-text">AMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD"><span class="nav-number">3.</span> <span class="nav-text">CMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AMD-与-CMD-的区别"><span class="nav-number">4.</span> <span class="nav-text">AMD 与 CMD 的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CommonJS"><span class="nav-number">5.</span> <span class="nav-text">CommonJS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES6"><span class="nav-number">6.</span> <span class="nav-text">ES6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES6-与-CommonJS"><span class="nav-number">7.</span> <span class="nav-text">ES6 与 CommonJS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babel"><span class="nav-number">8.</span> <span class="nav-text">babel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack"><span class="nav-number">9.</span> <span class="nav-text">webpack</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈树鸿</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
