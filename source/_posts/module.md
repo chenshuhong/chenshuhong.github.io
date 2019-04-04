@@ -12,7 +12,7 @@ categories: 前端
 - ES6
 
 ## AMD
-
+<!-- more -->
 > The Asynchronous Module Definition
 
 **AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。**

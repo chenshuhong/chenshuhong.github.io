@@ -15,7 +15,7 @@ div{
 	background:#ddd;
 	text-align:center;
 }
-
+<!-- more -->
 ## border实现
 
 html
