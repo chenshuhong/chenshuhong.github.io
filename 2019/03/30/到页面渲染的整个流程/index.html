@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="浏览器接收url到开启网络请求线程多进程的浏览器浏览器是多进程的，进程包括">
+<meta name="keywords" content="javascript,浏览器,http">
+<meta property="og:type" content="article">
+<meta property="og:title" content="输入url到页面渲染的整个过程">
+<meta property="og:url" content="http://yoursite.com/2019/03/30/到页面渲染的整个流程/index.html">
+<meta property="og:site_name" content="陈树鸿的个人博客">
+<meta property="og:description" content="浏览器接收url到开启网络请求线程多进程的浏览器浏览器是多进程的，进程包括">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="c:/mdDocument/面试秘籍/img/页面流程.jpg">
+<meta property="og:image" content="c:/mdDocument/面试秘籍/img/html解析.jpg">
+<meta property="og:image" content="c:/mdDocument/面试秘籍/img/dom生成.jpg">
+<meta property="og:image" content="c:/mdDocument/面试秘籍/img/cssom.jpg">
+<meta property="og:image" content="c:/mdDocument/面试秘籍/img/rendertree.jpg">
+<meta property="og:image" content="c:/mdDocument/面试秘籍/img/render.jpg">
+<meta property="og:updated_time" content="2019-04-09T08:09:02.909Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="输入url到页面渲染的整个过程">
+<meta name="twitter:description" content="浏览器接收url到开启网络请求线程多进程的浏览器浏览器是多进程的，进程包括">
+<meta name="twitter:image" content="c:/mdDocument/面试秘籍/img/页面流程.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/30/到页面渲染的整个流程/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>输入url到页面渲染的整个过程 | 陈树鸿的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈树鸿的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">实在是学不动了</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/30/到页面渲染的整个流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈树鸿">
+      <meta itemprop="description" content="梦想着有一天成为全栈工程师">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈树鸿的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">输入url到页面渲染的整个过程
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-30 18:59:07" itemprop="dateCreated datePublished" datetime="2019-03-30T18:59:07+08:00">2019-03-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-09 16:09:02" itemprop="dateModified" datetime="2019-04-09T16:09:02+08:00">2019-04-09</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/前端/" itemprop="url" rel="index"><span itemprop="name">前端</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="浏览器接收url到开启网络请求线程"><a href="#浏览器接收url到开启网络请求线程" class="headerlink" title="浏览器接收url到开启网络请求线程"></a>浏览器接收url到开启网络请求线程</h1><h2 id="多进程的浏览器"><a href="#多进程的浏览器" class="headerlink" title="多进程的浏览器"></a>多进程的浏览器</h2><p>浏览器是多进程的，进程包括<br><a id="more"></a></p>
+<ul>
+<li><p>Browser进程：浏览器的主进程（负责协调、主控），只有一个。作用有</p>
+<ul>
+<li>负责浏览器界面显示，与用户交互。如前进，后退等</li>
+<li>负责各个页面的管理，创建和销毁其他进程</li>
+<li>将Renderer进程得到的内存中的Bitmap，绘制到用户界面上</li>
+<li>网络资源的管理，下载等</li>
+</ul>
+</li>
+<li><p>第三方插件进程：每种类型的插件对应一个进程，仅当使用该插件时才创建</p>
+</li>
+<li>GPU进程：最多一个，用于3D绘制等</li>
+<li>浏览器渲染进程（浏览器内核）（Renderer进程，内部是多线程的）：默认每个Tab页面一个进程，互不影响，当然，浏览器有时会将多个进程合并。主要作用为<ul>
+<li>页面渲染，脚本执行，事件处理等</li>
+</ul>
+</li>
+</ul>
+<h2 id="多线程的浏览器内核"><a href="#多线程的浏览器内核" class="headerlink" title="多线程的浏览器内核"></a>多线程的浏览器内核</h2><p>每一个tab页面可以看作是浏览器内核进程，然后这个进程是多线程的，它有几大类子线程</p>
+<ul>
+<li>GUI渲染线程<ul>
+<li>负责渲染浏览器界面，解析HTML，CSS，构建DOM树和RenderObject树，布局和绘制等。</li>
+<li>当界面需要重绘（Repaint）或由于某种操作引发回流(reflow)时，该线程就会执行</li>
+<li>注意，<strong>GUI渲染线程与JS引擎线程是互斥的</strong>，当JS引擎执行时GUI线程会被挂起（相当于被冻结了），GUI更新会被保存在一个队列中<strong>等到JS引擎空闲时</strong>立即被执行。</li>
+</ul>
+</li>
+<li>JS引擎线程<ul>
+<li>也称为JS内核，负责处理Javascript脚本程序。（例如V8引擎）</li>
+<li>JS引擎线程负责解析Javascript脚本，运行代码。</li>
+<li>JS引擎一直等待着任务队列中任务的到来，然后加以处理，一个Tab页（renderer进程）中无论什么时候都只有一个JS线程在运行JS程序</li>
+<li>同样注意，<strong>GUI渲染线程与JS引擎线程是互斥的</strong>，所以如果JS执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞。</li>
+</ul>
+</li>
+<li><p>事件触发线程</p>
+<ul>
+<li>归属于浏览器而不是JS引擎，用来控制事件循环（可以理解，JS引擎自己都忙不过来，需要浏览器另开线程协助）</li>
+<li>当JS引擎执行代码块如setTimeOut时（也可来自浏览器内核的其他线程,如鼠标点击、AJAX异步请求等），会将对应任务添加到事件线程中</li>
+<li>当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待JS引擎的处理</li>
+<li>注意，由于JS的单线程关系，所以这些待处理队列中的事件都得排队等待JS引擎处理（当JS引擎空闲时才会去执行）</li>
+</ul>
+</li>
+<li>定时触发器线程<ul>
+<li>传说中的<code>setInterval</code>与<code>setTimeout</code>所在线程</li>
+<li>浏览器定时计数器并不是由JavaScript引擎计数的,（因为JavaScript引擎是单线程的, 如果处于阻塞线程状态就会影响记计时的准确）</li>
+<li>因此通过单独线程来计时并触发定时（计时完毕后，添加到事件队列中，等待JS引擎空闲后执行）</li>
+<li>注意，W3C在HTML标准中规定，规定要求setTimeout中低于4ms的时间间隔算为4ms。</li>
+</ul>
+</li>
+<li>异步http请求线程<ul>
+<li>在XMLHttpRequest在连接后是通过浏览器新开一个线程请求</li>
+<li>将检测到状态变更时，如果设置有回调函数，异步线程就<strong>产生状态变更事件</strong>，将这个回调再放入事件队列中。再由JavaScript引擎执行。</li>
+</ul>
+</li>
+</ul>
+<h2 id="解析URL"><a href="#解析URL" class="headerlink" title="解析URL"></a>解析URL</h2><p>输入URL后，会进行解析（URL的本质就是统一资源定位符）</p>
+<p>URL一般包括几大部分：</p>
+<ul>
+<li><code>protocol</code>，协议头，譬如有http，ftp等</li>
+<li><code>host</code>，主机域名或IP地址</li>
+<li><code>port</code>，端口号</li>
+<li><code>path</code>，目录路径</li>
+<li><code>query</code>，即查询参数</li>
+<li><code>fragment</code>，即<code>#</code>后的hash值，一般用来定位到某个位置</li>
+</ul>
+<h2 id="网络请求都是单独的线程"><a href="#网络请求都是单独的线程" class="headerlink" title="网络请求都是单独的线程"></a>网络请求都是单独的线程</h2><p>每次网络请求时都需要开辟单独的线程进行，譬如如果URL解析到http协议，就会新建一个网络线程去处理资源下载</p>
+<h1 id="开启网络线程到发出一个完整的http请求"><a href="#开启网络线程到发出一个完整的http请求" class="headerlink" title="开启网络线程到发出一个完整的http请求"></a>开启网络线程到发出一个完整的http请求</h1><h2 id="DNS解析"><a href="#DNS解析" class="headerlink" title="DNS解析"></a>DNS解析</h2><p>首先是 DNS 查询，会提供访问速度最快的 IP 地址回来</p>
+<p>DNS 是 Domain Name System 的缩写，作用很简单，根据域名查询对应的 IP 地址。</p>
+<h3 id="为什么要有-DNS"><a href="#为什么要有-DNS" class="headerlink" title="为什么要有 DNS"></a>为什么要有 DNS</h3><p>TCP/IP 约定每个网络请求包根据 IP 地址确认接收方。这和你打电话需要知道对方电话号码一样。</p>
+<p>因为 IP 存在数字和英文的组合（IPv6），很不利于人类记忆，所以就出现了域名。你可以把域名看成是某个 IP 的别名，DNS 就是去查询这个别名的真正名称是什么。</p>
+<p><strong>为什么不设计成直接根据域名确认接收方呢？</strong></p>
+<p>在 iPv4 里，IP 地址是 4 个 0-255 的数，2 的 8 次方，8 bit，1 byte。只要 4 个字节的大小。 如果是支持字符串，就算用最简单的 ASCII 编码，一个字符就要 1 个字节。一个常见的域名通常十几个字符，最长可以支持 255 个字符，比用 IP 表示大了很多倍。</p>
+<p>有的人可能觉得虽然大了很多倍，但是如果只是一个请求大了几个字节性能影响也不大。这里面还有一个误区，TCP/IP 只是一个协议，网络中和通讯有关设备是多种多样的。比如我发送一个 5 KB 的字符串，中间有可能通过光纤传递传递，也有可能通过早期的铜缆。不同的连接材料的带宽区别很大。有可能一个包的 maxSize 只能是 1 KB（IP 层的 MTU）。应用层的数据在通讯过程中会根据通讯设备的带宽分成很多个包。一个 http 请求并不是只发了一个包，可能一次请求被拆成了很多个包。所以如果用域名，网络请求的数据量会增加很多。</p>
+<h3 id="DNS-如何工作"><a href="#DNS-如何工作" class="headerlink" title="DNS 如何工作"></a>DNS 如何工作</h3><p>在 TCP 握手之前就已经进行了 DNS 查询，这个查询是操作系统自己做的。</p>
+<h3 id="不是一台服务器，是分布式服务器"><a href="#不是一台服务器，是分布式服务器" class="headerlink" title="不是一台服务器，是分布式服务器"></a>不是一台服务器，是分布式服务器</h3><p>互联网中有那么多的域名，全部都存在一台服务器中显然是不可能的。全世界每天有那么多的域名新增、修改，如果全往一台服务器做 IO ，性能多强也扛不住。</p>
+<p>DNS 是分层的数据库结构。</p>
+<p>比如一个域名 <code>www.google.com</code>, 分成了4层：根域名、com、google、www。根域名是用<code>.</code>表示，因为域名的最后的<code>.</code>可以被忽略，所有常常被人遗忘，完整的域名表示是<code>www.google.com.</code>。</p>
+<p>当你在浏览器中想访问 <code>www.google.com</code> 时，会进行一下操作：</p>
+<ol>
+<li>操作系统会首先在本地缓存中查询 IP</li>
+<li>没有的话会去系统配置的 DNS 服务器中查询</li>
+<li>如果这时候还没得话，会直接去 DNS 根服务器查询，这一步查询会找出负责 <code>com</code> 这个一级域名的服务器</li>
+<li>然后去该服务器查询 <code>google</code> 这个二级域名</li>
+<li>如果我们持有 google域名，google 下的子域名我们可以自己控制。有两种控制方式，一种是直接把子域名一起注册到 google域名里，记录在 com 域名服务器下。一种是自建 name server。此时向 com 域名查询 google，会返回你自己配置的 name server 服务器地址，解析就由你自己控制了。</li>
+</ol>
+<p>自建 name server 通常是对域名商的 ns 性能不满意。<a href="https://juejin.im/post/59c6201df265da064428b835" target="_blank" rel="noopener">《DNS 基础知识》</a>里提到：</p>
+<blockquote>
+<p>虽然顶级域名注册商都有自己的 nameserver, 但注册商提供的 nameserver  并不专业，在性能和稳定性上无法满足企业需求，这时就需要企业搭建自己的高性能 nameserver ，比如增加智能解析功能，让不同地域的用户访问最近的 IP，以此来提高服务质量。</p>
+</blockquote>
+<h3 id="DNS-不仅只是查询-IP"><a href="#DNS-不仅只是查询-IP" class="headerlink" title="DNS 不仅只是查询 IP"></a>DNS 不仅只是查询 IP</h3><p>除了域名解析的 A 记录。还包括了 MX（Mail eXchange）邮件服务器地址，还有别名 CNAME 记录。 实际上还有很多其他功能，比如根据 IP 地址反查域名（PTR），查询域名 DNS 服务器 IP 地址（NS）。</p>
+<h2 id="建立TCP链接"><a href="#建立TCP链接" class="headerlink" title="建立TCP链接"></a>建立TCP链接</h2><p>客户端发送一个带有SYN标志的数据包给服务端，服务端收到后，回传一个带有SYN/ACK标志的数据包以示传达确认信息，最后客户端再回传一个带ACK标志的数据包，代表握手结束，连接成功。</p>
+<p>上图也可以这么理解：</p>
+<p>客户端：“你好，在家不，有你快递。”</p>
+<p>服务端：“在的，送来就行。”</p>
+<p>客户端：“好嘞。”</p>
+<blockquote>
+<p>为了避免服务器与客户端双方的资源占用和损耗，当双方没有请求或响应传递时，任意一方都可以发起关闭请求。与创建TCP连接的3次握手类似，关闭TCP连接，需要4次挥手。</p>
+<p>客户端：“兄弟，我这边没数据要传了，咱关闭连接吧。”</p>
+<p>服务端：“收到，我看看我这边有木有数据了。”</p>
+<p>服务端：“兄弟，我这边也没数据要传你了，咱可以关闭连接了。”</p>
+<p>客户端：“好嘞。”</p>
+</blockquote>
+<h2 id="发送HTTP请求"><a href="#发送HTTP请求" class="headerlink" title="发送HTTP请求"></a>发送HTTP请求</h2><p>与服务器建立了连接后，就可以向服务器发起请求了</p>
+<h1 id="从服务器接收到请求到对应后台接收到请求"><a href="#从服务器接收到请求到对应后台接收到请求" class="headerlink" title="从服务器接收到请求到对应后台接收到请求"></a>从服务器接收到请求到对应后台接收到请求</h1><h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>对于大型的项目，由于并发访问量很大，所以往往一台服务器是吃不消的，所以一般会有若干台服务器组成一个集群，然后配合反向代理实现负载均衡</p>
+<p>当然了，负载均衡不止这一种实现方式，这里不深入…</p>
+<p>简单的说：</p>
+<p><strong>用户发起的请求都指向调度服务器（反向代理服务器，譬如安装了nginx控制负载均衡），然后调度服务器根据实际的调度算法，分配不同的请求给对应集群中的服务器执行，然后调度器等待实际服务器的HTTP响应，并将它反馈给用户</strong></p>
+<h2 id="后台的处理"><a href="#后台的处理" class="headerlink" title="后台的处理"></a>后台的处理</h2><p>一般后台都是部署到容器中的，所以一般为：</p>
+<ul>
+<li>先是容器接受到请求（如tomcat容器）</li>
+<li>然后对应容器中的后台程序接收到请求（如java程序）</li>
+<li>然后就是后台会有自己的统一处理，处理完后响应响应结果</li>
+</ul>
+<p>概括下：</p>
+<ul>
+<li>一般有的后端是有统一的验证的，如安全拦截，跨域验证</li>
+<li>如果这一步不符合规则，就直接返回了相应的http报文（如拒绝请求等）</li>
+<li>然后当验证通过后，才会进入实际的后台代码，此时是程序接收到请求，然后执行（譬如查询数据库，大量计算等等）</li>
+<li>等程序执行完毕后，就会返回一个http响应包（一般这一步也会经过多层封装）</li>
+<li>然后就是将这个包从后端发送到前端，完成交互</li>
+</ul>
+<h2 id="后台和前台的http交互"><a href="#后台和前台的http交互" class="headerlink" title="后台和前台的http交互"></a>后台和前台的http交互</h2><p>前后端交互时，http报文作为信息的载体，有专门文章介绍</p>
+<h1 id="解析页面流程"><a href="#解析页面流程" class="headerlink" title="解析页面流程"></a>解析页面流程</h1><h2 id="流程简述"><a href="#流程简述" class="headerlink" title="流程简述"></a>流程简述</h2><p>浏览器内核拿到内容后，渲染步骤大致可以分为以下几步：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 解析HTML，构建DOM树</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 解析CSS，生成CSS规则树</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> 合并DOM树和CSS规则，生成render树</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span> 布局render树（Layout/reflow），负责各元素尺寸、位置的计算</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span> 绘制render树（paint），绘制页面像素信息</span><br><span class="line"></span><br><span class="line"><span class="number">6.</span> 浏览器会将各层的信息发送给GPU，GPU会将各层合成（composite），显示在屏幕上</span><br></pre></td></tr></table></figure>
+<p><img src="C:\mdDocument\面试秘籍\img\页面流程.jpg" alt></p>
+<h2 id="HTML解析，构建DOM"><a href="#HTML解析，构建DOM" class="headerlink" title="HTML解析，构建DOM"></a>HTML解析，构建DOM</h2><p>整个渲染步骤中，HTML解析是第一步。</p>
+<p>简单的理解，这一步的流程是这样的：<strong>浏览器解析HTML，构建DOM树。</strong></p>
+<p>但实际上，在分析整体构建时，却不能一笔带过，得稍微展开。</p>
+<p>解析HTML到构建出DOM当然过程可以简述如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Bytes → characters → tokens → nodes → DOM</span><br></pre></td></tr></table></figure>
+<p>譬如假设有这样一个HTML页面：（以下部分的内容出自参考来源，修改了下格式）</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"style.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Critical Path<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello <span class="tag">&lt;<span class="name">span</span>&gt;</span>web performance<span class="tag">&lt;/<span class="name">span</span>&gt;</span> students!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"awesome-photo.jpg"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>浏览器的处理如下：</p>
+<p><img src="C:\mdDocument\面试秘籍\img\html解析.jpg" alt></p>
+<p>列举其中的一些重点过程：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> Conversion转换：浏览器将获得的HTML内容（Bytes）基于他的编码转换为单个字符</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> Tokenizing分词：浏览器按照HTML规范标准将这些字符转换为不同的标记token。每个token都有自己独特的含义以及规则集</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> Lexing词法分析：分词的结果是得到一堆的token，此时把他们转换为对象，这些对象分别定义他们的属性和规则</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span> DOM构建：因为HTML标记定义的就是不同标签之间的关系，这个关系就像是一个树形结构一样</span><br><span class="line">例如：body对象的父节点就是HTML对象，然后段略p对象的父节点就是body对象</span><br></pre></td></tr></table></figure>
+<p>最后的DOM树如下：</p>
+<p><img src="C:\mdDocument\面试秘籍\img\dom生成.jpg" alt></p>
+<h2 id="生成CSS规则"><a href="#生成CSS规则" class="headerlink" title="生成CSS规则"></a>生成CSS规则</h2><p>同理，CSS规则树的生成也是类似。简述为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Bytes → characters → tokens → nodes → CSSOM</span><br></pre></td></tr></table></figure>
+<p>譬如<code>style.css</code>内容如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">body &#123; font-size: <span class="number">16</span>px &#125;</span><br><span class="line">p &#123; font-weight: bold &#125;</span><br><span class="line">span &#123; <span class="attr">color</span>: red &#125;</span><br><span class="line">p span &#123; <span class="attr">display</span>: none &#125;</span><br><span class="line">img &#123; <span class="attr">float</span>: right &#125;</span><br></pre></td></tr></table></figure>
+<p>那么最终的CSSOM树就是：</p>
+<p><img src="C:\mdDocument\面试秘籍\img\cssom.jpg" alt></p>
+<h2 id="构建渲染树"><a href="#构建渲染树" class="headerlink" title="构建渲染树"></a>构建渲染树</h2><p>当DOM树和CSSOM都有了后，就要开始构建渲染树了</p>
+<p>一般来说，渲染树和DOM树相对应的，但不是严格意义上的一一对应</p>
+<p>因为有一些不可见的DOM元素不会插入到渲染树中，如head这种不可见的标签或者<code>display: none</code>等</p>
+<p>整体来说可以看图：</p>
+<p><img src="C:\mdDocument\面试秘籍\img\rendertree.jpg" alt></p>
+<h2 id="渲染"><a href="#渲染" class="headerlink" title="渲染"></a>渲染</h2><p>有了render树，接下来就是开始渲染，基本流程如下：</p>
+<p><img src="C:\mdDocument\面试秘籍\img\render.jpg" alt></p>
+<p>图中重要的四个步骤就是：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 计算CSS样式</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 构建渲染树</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> 布局，主要定位坐标和大小，是否换行，各种position overflow z-index属性</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span> 绘制，将图像绘制出来</span><br></pre></td></tr></table></figure>
+<p>然后，图中的线与箭头代表通过js动态修改了DOM或CSS，导致了重新布局（Layout）或渲染（Repaint）</p>
+<p>这里Layout和Repaint的概念是有区别的：</p>
+<ul>
+<li>Layout，也称为Reflow，即回流。一般意味着元素的内容、结构、位置或尺寸发生了变化，需要重新计算样式和渲染树</li>
+<li>Repaint，即重绘。意味着元素发生的改变只是影响了元素的一些外观之类的时候（例如，背景色，边框颜色，文字颜色等），此时只需要应用新样式绘制这个元素就可以了</li>
+</ul>
+<p>回流的成本开销要高于重绘，而且一个节点的回流往往回导致子节点以及同级节点的回流，<br>所以优化方案中一般都包括，尽量避免回流。</p>
+<p><strong>什么会引起回流？</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>页面渲染初始化</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>DOM结构改变，比如删除了某个节点</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span>render树变化，比如减少了padding</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span>窗口resize</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span>最复杂的一种：获取某些属性，引发回流，</span><br><span class="line">很多浏览器会对回流做优化，会等到数量足够时做一次批处理回流，</span><br><span class="line">但是除了render树的直接变化，当获取一些属性时，浏览器为了获得正确的值也会触发回流，这样使得浏览器优化无效，包括</span><br><span class="line">    （<span class="number">1</span>）offset(Top/Left/Width/Height)</span><br><span class="line">     (<span class="number">2</span>) scroll(Top/Left/Width/Height)</span><br><span class="line">     (<span class="number">3</span>) cilent(Top/Left/Width/Height)</span><br><span class="line">     (<span class="number">4</span>) width,height</span><br><span class="line">     (<span class="number">5</span>) 调用了getComputedStyle()或者IE的currentStyle</span><br></pre></td></tr></table></figure>
+<p>回流一定伴随着重绘，重绘却可以单独出现</p>
+<p>所以一般会有一些优化方案，如：</p>
+<ul>
+<li>减少逐项更改样式，最好一次性更改style，或者将样式定义为class并一次性更新</li>
+<li>避免循环操作dom，创建一个documentFragment或div，在它上面应用所有DOM操作，最后再把它添加到window.document</li>
+<li>避免多次读取offset等属性。无法避免则将它们缓存到变量</li>
+<li>将复杂的元素绝对定位或固定定位，使得它脱离文档流，否则回流代价会很高</li>
+</ul>
+<p><strong>注意：改变字体大小会引发回流</strong></p>
+<p>再来看一个示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="built_in">document</span>.body.style;</span><br><span class="line"></span><br><span class="line">s.padding = <span class="string">"2px"</span>; <span class="comment">// 回流+重绘</span></span><br><span class="line">s.border = <span class="string">"1px solid red"</span>; <span class="comment">// 再一次 回流+重绘</span></span><br><span class="line">s.color = <span class="string">"blue"</span>; <span class="comment">// 再一次重绘</span></span><br><span class="line">s.backgroundColor = <span class="string">"#ccc"</span>; <span class="comment">// 再一次 重绘</span></span><br><span class="line">s.fontSize = <span class="string">"14px"</span>; <span class="comment">// 再一次 回流+重绘</span></span><br><span class="line"><span class="comment">// 添加node，再一次 回流+重绘</span></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(<span class="built_in">document</span>.createTextNode(<span class="string">'abc!'</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="简单层与复合层"><a href="#简单层与复合层" class="headerlink" title="简单层与复合层"></a>简单层与复合层</h2><p>上述中的渲染中止步于绘制，但实际上绘制这一步也没有这么简单，它可以结合复合层和简单层的概念来讲。</p>
+<p>这里不展开，进简单介绍下：</p>
+<ul>
+<li>可以认为默认只有一个复合图层，所有的DOM节点都是在这个复合图层下的</li>
+<li>如果开启了硬件加速功能，可以将某个节点变成复合图层</li>
+<li>复合图层之间的绘制互不干扰，由GPU直接控制</li>
+<li>而简单图层中，就算是absolute等布局，变化时不影响整体的回流，但是由于在同一个图层中，仍然是会影响绘制的，因此做动画时性能仍然很低。而复合层是独立的，所以一般做动画推荐使用硬件加速</li>
+</ul>
+<h2 id="资源外链的下载"><a href="#资源外链的下载" class="headerlink" title="资源外链的下载"></a>资源外链的下载</h2><p>上面介绍了html解析，渲染流程。但实际上，在解析html时，会遇到一些资源连接，此时就需要进行单独处理了</p>
+<p>简单起见，这里将遇到的静态资源分为一下几大类（未列举所有）：</p>
+<ul>
+<li>CSS样式资源</li>
+<li>JS脚本资源</li>
+<li>img图片类资源</li>
+</ul>
+<p><strong>遇到外链时的处理</strong></p>
+<p>当遇到上述的外链时，会单独开启一个下载线程去下载资源（http1.1中是每一个资源的下载都要开启一个http请求，对应一个tcp/ip链接）</p>
+<p><strong>遇到CSS样式资源</strong></p>
+<p>CSS资源的处理有几个特点：</p>
+<ul>
+<li>CSS下载时异步，不会阻塞浏览器构建DOM树</li>
+<li>但是会阻塞渲染，也就是在构建render时，会等到css下载解析完毕后才进行（这点与浏览器优化有关，防止css规则不断改变，避免了重复的构建）</li>
+<li>有例外，<code>media query</code>声明的CSS是不会阻塞渲染的</li>
+</ul>
+<p><strong>遇到JS脚本资源</strong></p>
+<p>JS脚本资源的处理有几个特点：</p>
+<ul>
+<li>阻塞浏览器的解析，也就是说发现一个外链脚本时，需等待脚本下载完成并执行后才会继续解析HTML</li>
+<li>浏览器的优化，一般现代浏览器有优化，在脚本阻塞时，也会继续下载其它资源（当然有并发上限），但是虽然脚本可以并行下载，解析过程仍然是阻塞的，也就是说必须这个脚本执行完毕后才会接下来的解析，并行下载只是一种优化而已</li>
+<li>defer与async，普通的脚本是会阻塞浏览器解析的，但是可以加上defer或async属性，这样脚本就变成异步了，可以等到解析完毕后再执行</li>
+</ul>
+<p><strong>遇到img图片类资源</strong></p>
+<p>遇到图片等资源时，直接就是异步下载，不会阻塞解析，下载完毕后直接用图片替换原有src的地方</p>
+<h2 id="loaded和domcontentloaded"><a href="#loaded和domcontentloaded" class="headerlink" title="loaded和domcontentloaded"></a>loaded和domcontentloaded</h2><p>简单的对比：</p>
+<ul>
+<li>DOMContentLoaded 事件触发时，仅当DOM加载完成，不包括样式表，图片(譬如如果有async加载的脚本就不一定完成)</li>
+<li>load 事件触发时，页面上所有的DOM，样式表，脚本，图片都已经加载完成了</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/浏览器/" rel="tag"># 浏览器</a>
+          
+            <a href="/tags/http/" rel="tag"># http</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/28/跨域/" rel="next" title="跨域">
+                <i class="fa fa-chevron-left"></i> 跨域
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/31/UTF-8的前世今生/" rel="prev" title="UTF-8的前世今生">
+                UTF-8的前世今生 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">陈树鸿</p>
+              <p class="site-description motion-element" itemprop="description">梦想着有一天成为全栈工程师</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/chenshuhong" title="GitHub &rarr; https://github.com/chenshuhong" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#浏览器接收url到开启网络请求线程"><span class="nav-number">1.</span> <span class="nav-text">浏览器接收url到开启网络请求线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程的浏览器"><span class="nav-number">1.1.</span> <span class="nav-text">多进程的浏览器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程的浏览器内核"><span class="nav-number">1.2.</span> <span class="nav-text">多线程的浏览器内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析URL"><span class="nav-number">1.3.</span> <span class="nav-text">解析URL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络请求都是单独的线程"><span class="nav-number">1.4.</span> <span class="nav-text">网络请求都是单独的线程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启网络线程到发出一个完整的http请求"><span class="nav-number">2.</span> <span class="nav-text">开启网络线程到发出一个完整的http请求</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS解析"><span class="nav-number">2.1.</span> <span class="nav-text">DNS解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要有-DNS"><span class="nav-number">2.1.1.</span> <span class="nav-text">为什么要有 DNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-如何工作"><span class="nav-number">2.1.2.</span> <span class="nav-text">DNS 如何工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不是一台服务器，是分布式服务器"><span class="nav-number">2.1.3.</span> <span class="nav-text">不是一台服务器，是分布式服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-不仅只是查询-IP"><span class="nav-number">2.1.4.</span> <span class="nav-text">DNS 不仅只是查询 IP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立TCP链接"><span class="nav-number">2.2.</span> <span class="nav-text">建立TCP链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送HTTP请求"><span class="nav-number">2.3.</span> <span class="nav-text">发送HTTP请求</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从服务器接收到请求到对应后台接收到请求"><span class="nav-number">3.</span> <span class="nav-text">从服务器接收到请求到对应后台接收到请求</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡"><span class="nav-number">3.1.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后台的处理"><span class="nav-number">3.2.</span> <span class="nav-text">后台的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后台和前台的http交互"><span class="nav-number">3.3.</span> <span class="nav-text">后台和前台的http交互</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解析页面流程"><span class="nav-number">4.</span> <span class="nav-text">解析页面流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#流程简述"><span class="nav-number">4.1.</span> <span class="nav-text">流程简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML解析，构建DOM"><span class="nav-number">4.2.</span> <span class="nav-text">HTML解析，构建DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成CSS规则"><span class="nav-number">4.3.</span> <span class="nav-text">生成CSS规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建渲染树"><span class="nav-number">4.4.</span> <span class="nav-text">构建渲染树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渲染"><span class="nav-number">4.5.</span> <span class="nav-text">渲染</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单层与复合层"><span class="nav-number">4.6.</span> <span class="nav-text">简单层与复合层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源外链的下载"><span class="nav-number">4.7.</span> <span class="nav-text">资源外链的下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loaded和domcontentloaded"><span class="nav-number">4.8.</span> <span class="nav-text">loaded和domcontentloaded</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈树鸿</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
