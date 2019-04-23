@@ -9,7 +9,7 @@ categories: 前端
 ```
 Object.defineProperty(obj, prop, desc)
 ```
-
+<!-- more -->
 1. obj 需要定义属性的当前对象
 
 2. prop 当前需要定义的属性名
